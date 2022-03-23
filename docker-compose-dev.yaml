@@ -28,8 +28,8 @@ services:
 
   client2:
     container_name: client2
-    image: client2:latest
-    entrypoint: /client2
+    image: client:latest
+    entrypoint: /client
     environment:
       - CLI_ID=2
       - CLI_SERVER_ADDRESS=server:12345
