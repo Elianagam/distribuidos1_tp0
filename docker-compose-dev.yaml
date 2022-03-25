@@ -25,6 +25,8 @@ services:
       - CLI_LOG_LEVEL=DEBUG
     networks:
       - testing_net
+    volumes:
+      - client_tp0:/home/fiuba/distribuidos1/
     depends_on:
       - server
 
@@ -37,3 +39,4 @@ networks:
 
 volumes:
   server_tp0:
+  client_tp0:
