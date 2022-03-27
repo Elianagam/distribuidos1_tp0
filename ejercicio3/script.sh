@@ -2,4 +2,4 @@
 
 export dest=$(docker inspect distribuidos1_tp0_testing_net |grep  IPv4Address | sed 's/.*IPv4Address": "//'|sed 's/",$//' | sed 's/\/.//');
 
-echo "test" | nc $des 12345
+echo "test" | nc $dest 12345
