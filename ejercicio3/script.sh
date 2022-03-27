@@ -1,2 +1,5 @@
 #!/bin/bash
-echo "test" | nc 172.25.125.2 12345
+
+export dest=$(docker inspect distribuidos1_tp0_testing_net |grep  IPv4Address | sed 's/.*IPv4Address": "//'|sed 's/",$//' | sed 's/\/.//');
+
+echo "test" | nc $des 12345
