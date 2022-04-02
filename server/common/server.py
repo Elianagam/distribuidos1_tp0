@@ -1,16 +1,15 @@
 import socket
 import logging
-from _thread import *
-import threading
-
-print_lock = threading.Lock()
+import signal
+#import sys
 
 
 class Server:
     def __init__(self, port, listen_backlog):
         # Initialize server socket
         self._server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #self._server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.is_alive = True
         self._server_socket.bind(('', port))
         self._server_socket.listen(listen_backlog)
 
@@ -25,10 +24,12 @@ class Server:
 
         # TODO: Modify this program to handle signal to graceful shutdown
         # the server
-        while True:
+        signal.signal(signal.SIGTERM, self.__close_graceful)
+
+        while self.is_alive:
             client_sock = self.__accept_new_connection()
-            start_new_thread(self.__handle_client_connection, (client_sock,))
-            
+            self.__handle_client_connection(client_sock)
+        self.__close()
 
     def __handle_client_connection(self, client_sock):
         """
@@ -38,17 +39,11 @@ class Server:
         client socket will also be closed
         """
         try:
-            # acquire lock
-            print_lock.acquire()
-
             msg = client_sock.recv(1024).rstrip().decode('utf-8')
             logging.info(
                 'Message received from connection {}. Msg: {}'
                 .format(client_sock.getpeername(), msg))
             client_sock.send("Your Message has been received: {}\n".format(msg).encode('utf-8'))
-
-            # release lock
-            print_lock.release()
         except OSError:
             logging.info("Error while reading socket {}".format(client_sock))
         finally:
@@ -67,3 +62,13 @@ class Server:
         c, addr = self._server_socket.accept()
         logging.info('Got connection from {}'.format(addr))
         return c
+
+    def __close(self):
+        self._server_socket.shutdown(socket.SHUT_RDWR)
+        self._server_socket.close()
+
+    
+    def __close_graceful(self,signal, frame):
+        logging.info("---- Close after SIGTERM signal...")
+        self.is_alive = False
+        #sys.exit(1)
