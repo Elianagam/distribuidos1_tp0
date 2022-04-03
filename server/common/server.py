@@ -1,7 +1,6 @@
 import socket
 import logging
 import signal
-#import sys
 
 
 class Server:
@@ -29,6 +28,7 @@ class Server:
         while self.is_alive:
             client_sock = self.__accept_new_connection()
             self.__handle_client_connection(client_sock)
+
         self.__close()
 
     def __handle_client_connection(self, client_sock):
@@ -64,11 +64,11 @@ class Server:
         return c
 
     def __close(self):
+        logging.info("---- Close and shutdown ...")
         self._server_socket.shutdown(socket.SHUT_RDWR)
         self._server_socket.close()
 
     
-    def __close_graceful(self,signal, frame):
+    def __close_graceful(self, signal, frame):
         logging.info("---- Close after SIGTERM signal...")
         self.is_alive = False
-        #sys.exit(1)
