@@ -65,7 +65,7 @@ class Server:
 
     def __close(self):
         logging.info("---- Close and shutdown ...")
-        self._server_socket.shutdown(socket.SHUT_RDWR)
+        #self._server_socket.shutdown(socket.SHUT_RDWR)
         self._server_socket.close()
 
     
