@@ -37,3 +37,8 @@ docker-compose-down:
 docker-compose-logs:
 	docker-compose -f docker-compose-dev.yaml logs -f
 .PHONY: docker-compose-logs
+
+docker-compose-test3:
+	docker build -t test3 .
+	docker run --rm -it --network=distribuidos1_tp0_testing_net test3
+.PHONY: docker-compose-test3
